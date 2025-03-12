@@ -1,12 +1,12 @@
 {
-  "name": "bits",
+  "name": "expressjs-winston-typescript",
   "version": "1.0.0",
   "description": "A starter template with expressjs & winston & typescript.",
-  "main": "src/build/server.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "npx tsc -b src",
-    "start": "node src/build/server.js",
-    "dev": "concurrently \"npx tsc -p src/tsconfig.json -w\" \"nodemon -q src/build/server.js\""
+    "build": "etsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon"
   },
   "keywords": [
     "api",
