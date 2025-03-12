@@ -1,17 +1,11 @@
-import * as dotenv from 'dotenv';
-import path from 'path';
+import * as dotenv from "dotenv";
+import path from "path";
 
-// Parsing the env file.
-if (process.env.NODE_ENV === 'production') {
-  const pmPath = process.env.pm_exec_path;
-  if (pmPath) {
-    const envPath = path.resolve(pmPath.slice(0, -22), '.env');
-    dotenv.config({
-      path: envPath,
-    });
-  }
-} else {
+// Parsing the env file
+if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
   dotenv.config();
+} else {
+  dotenv.config({ path: path.join(__dirname, "../../.env") });
 }
 
 // Interface to load env variables
@@ -22,21 +16,26 @@ interface ENV {
   NODE_ENV: string | undefined;
   PORT: number | undefined;
   APP_NAME: string | undefined;
+  LOGS_DIR: string | undefined;
 }
 
 interface Config {
   NODE_ENV: string;
   PORT: number;
   APP_NAME: string;
+  LOGS_DIR: string;
 }
 
 // Loading process.env as ENV interface
 
 const getConfig = (): ENV => {
+  const env = process.env;
+
   return {
-    NODE_ENV: process.env.NODE_ENV,
-    PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
-    APP_NAME: process.env.APP_NAME,
+    NODE_ENV: env.NODE_ENV || "development",
+    PORT: env.PORT ? Number(env.PORT) : undefined,
+    APP_NAME: env.APP_NAME,
+    LOGS_DIR: env.LOGS_DIR || "logs",
   };
 };
 
@@ -44,7 +43,7 @@ const getConfig = (): ENV => {
 // want our app to run if it can't connect to DB and ensure
 // that these fields are accessible. If all is good return
 // it as Config which just removes the undefined from our type
-// definition.
+// definition
 
 const getSanitizedConfig = (config: ENV): Config => {
   for (const [key, value] of Object.entries(config)) {
@@ -55,8 +54,4 @@ const getSanitizedConfig = (config: ENV): Config => {
   return config as Config;
 };
 
-const config = getConfig();
-
-const sanitizedConfig = getSanitizedConfig(config);
-
-export default sanitizedConfig;
+export const config = getSanitizedConfig(getConfig());

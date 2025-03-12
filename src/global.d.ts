@@ -3,5 +3,6 @@ namespace NodeJS {
     NODE_ENV: string;
     PORT: string;
     APP_NAME: string;
+    LOGS_DIR: string;
   }
 }
